@@ -8,9 +8,11 @@
 
 import Foundation
 import SpriteKit
+import AVFoundation
 
 class MenuScene: SKScene {
-    
+
+    var music:AVAudioPlayer = AVAudioPlayer()
     //TODO: - Use this to create a menu scene
     var background:SKSpriteNode! //Sprite
     var logo:SKSpriteNode!
@@ -23,6 +25,16 @@ class MenuScene: SKScene {
     //TODO: - Add a main menu and play button
     override init(size: CGSize) {
         super.init(size: size)
+       
+       let musicFile =	Bundle.main.path(forResource: "music/menu", ofType: ".mp3")
+        
+        do{
+            try music = AVAudioPlayer (contentsOf: URL (fileURLWithPath: musicFile!))
+        }
+            catch{
+                print(error)
+            }
+        music.play()
         
         background = SKSpriteNode(imageNamed: "screenMenu")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
@@ -56,7 +68,9 @@ class MenuScene: SKScene {
                 if node.name == "startButton" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
+                        self.music.stop()
                         let reveal = SKTransition.reveal(with: .down, duration: 1)
+                        //let newScene = DialoguesScene(size:self.size)
                         let newScene = GameScene(size:self.size)
                         self.view?.presentScene(newScene, transition: reveal)
                         print("Button Pressed")
