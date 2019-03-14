@@ -12,10 +12,38 @@ import SpriteKit
 class MenuScene: SKScene {
     
     //TODO: - Use this to create a menu scene
+    var background:SKSpriteNode! //Sprite
+    var logo:SKSpriteNode!
+    let screenSize: CGRect = UIScreen.main.bounds
+    
+    var startBtn: SKSpriteNode!
+    var quitBtn: SKSpriteNode!
+    //let startBtn = SKSpriteNode(imageNamed: "button_01")
     
     //TODO: - Add a main menu and play button
     override init(size: CGSize) {
         super.init(size: size)
+        
+        background = SKSpriteNode(imageNamed: "screenMenu")
+        background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
+        background.size = CGSize(width: screenSize.width, height: screenSize.height)
+        
+        logo = SKSpriteNode(imageNamed: "logo")
+        logo.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2+80)
+        logo.size = CGSize(width: screenSize.width/4, height: screenSize.height/4)
+        
+        startBtn = SKSpriteNode(imageNamed: "Start")
+        startBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2-35)
+        startBtn.name = "startButton"
+        
+        quitBtn = SKSpriteNode(imageNamed: "Quit")
+        quitBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2-90)
+        quitBtn.name = "startButton"
+        
+        addChild(background)
+        addChild(logo)
+        addChild(startBtn)
+        addChild(quitBtn)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -24,8 +52,17 @@ class MenuScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            //TODO: - Create a transition
-            scene?.view?.presentScene(GameScene(size: self.frame.size))
+            enumerateChildNodes(withName: "//*", using: { ( node, stop) in
+                if node.name == "startButton" {
+                    if node.contains(t.location(in:self))// do whatever here
+                    {
+                        let reveal = SKTransition.reveal(with: .down, duration: 1)
+                        let newScene = GameScene(size:self.size)
+                        self.view?.presentScene(newScene, transition: reveal)
+                        print("Button Pressed")
+                    }
+                }
+            })
         }
     }
 }
