@@ -104,8 +104,7 @@
 				A17D4B02223AFAC700362966 /* sounds */,
 				A17D4AFA223AF64300362966 /* music */,
 			);
-			name = Audio;
-			path = "New Group";
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		A17D4B04223B114F00362966 /* Animations */ = {
