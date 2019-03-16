@@ -23,10 +23,10 @@ class GameOverScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
+   /*     for t in touches {
             //TODO: - Create transition back to menu scene when restart pressed
             
-        }
+        }*/
     }
     
 }

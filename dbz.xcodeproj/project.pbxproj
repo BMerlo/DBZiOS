@@ -21,6 +21,7 @@
 		A17D4B01223AFA9200362966 /* Backgrounds in Resources */ = {isa = PBXBuildFile; fileRef = A17D4B00223AFA9200362966 /* Backgrounds */; };
 		A17D4B03223AFAC700362966 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = A17D4B02223AFAC700362966 /* sounds */; };
 		A17D4B06223B115B00362966 /* idle.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A17D4B05223B115B00362966 /* idle.atlasc */; };
+		A1C7D00E223CA05D0058267B /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C7D00D223CA05C0058267B /* TLAnalogJoystick.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		A17D4B00223AFA9200362966 /* Backgrounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Backgrounds; path = dbz/Sprites/Backgrounds; sourceTree = SOURCE_ROOT; };
 		A17D4B02223AFAC700362966 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = Audio/sounds; sourceTree = SOURCE_ROOT; };
 		A17D4B05223B115B00362966 /* idle.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = idle.atlasc; path = dbz/Sprites/Animation/idle.atlasc; sourceTree = SOURCE_ROOT; };
+		A1C7D00D223CA05C0058267B /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 		A135F821223AC8C40094859A /* dbz */ = {
 			isa = PBXGroup;
 			children = (
+				A1C7D00D223CA05C0058267B /* TLAnalogJoystick.swift */,
 				A17D4AE8223AF0D300362966 /* MenuScene.swift */,
 				A17D4AFE223AF9A500362966 /* DialoguesScene.swift */,
 				A135F828223AC8C40094859A /* GameScene.swift */,
@@ -195,6 +198,7 @@
 				A135F829223AC8C40094859A /* GameScene.swift in Sources */,
 				A17D4AE9223AF0D300362966 /* MenuScene.swift in Sources */,
 				A135F82B223AC8C40094859A /* GameViewController.swift in Sources */,
+				A1C7D00E223CA05D0058267B /* TLAnalogJoystick.swift in Sources */,
 				A17D4AFF223AF9A500362966 /* DialoguesScene.swift in Sources */,
 				A135F823223AC8C40094859A /* AppDelegate.swift in Sources */,
 			);
@@ -343,6 +347,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H9VZ839PYR;
 				INFOPLIST_FILE = dbz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -360,6 +365,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H9VZ839PYR;
 				INFOPLIST_FILE = dbz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
