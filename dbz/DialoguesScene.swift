@@ -58,8 +58,13 @@ class DialoguesScene: SKScene {
         dialogue2.size = CGSize(width: screenSize.width, height: screenSize.height)
         dialogue2.name = "d2"
         
-        addChild(dialogue2)
+        dialogue3 = SKSpriteNode(imageNamed: "vegeta2")
+        dialogue3.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
+        dialogue3.size = CGSize(width: screenSize.width, height: screenSize.height)
+        dialogue3.name = "d3"
+        
         addChild(dialogue1)
+        
         
     }
     
@@ -74,14 +79,43 @@ class DialoguesScene: SKScene {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         self.musicDialogue1.stop()
-                        self.musicDialogue.stop()
+                        //self.musicDialogue.stop()
                         
+                        self.dialogue1.removeFromParent()
+                        print("trying to remove d1")
+                        
+                        self.addChild(self.dialogue2)
+                        self.musicDialogue3.play()
+                        
+                    //    self.addChild(dialogue2)
+                    }
+                }
+                if node.name == "d2" {
+                    if node.contains(t.location(in:self))
+                    {
+                        self.musicDialogue3.stop()
+                      //  self.musicDialogue.stop()
+                        print("trying to remove d2")
+                        
+                        self.addChild(self.dialogue3)
+                        
+                        self.dialogue2.removeFromParent()
+                        self.musicDialogue2.play()
+                    }
+                }
+                if node.name == "d3" {
+                    if node.contains(t.location(in:self))
+                    {
+                        self.musicDialogue.stop()
+                        self.musicDialogue2.stop()
+                        print("trying to remove d3")
+                        
+                        //self.dialogue2.removeFromParent()
                         let reveal = SKTransition.reveal(with: .down, duration: 1)
                         let newScene = GameScene(size:self.size)
                         self.view?.presentScene(newScene, transition: reveal)
-                        print("trying to remove")
                         
-                        //self.musicDialogue3.play()
+                        
                     }
                 }
             })

@@ -35,7 +35,7 @@ class MenuScene: SKScene {
                 print(error)
             }
         music.play()
-        
+   
         background = SKSpriteNode(imageNamed: "screenMenu")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
         background.size = CGSize(width: screenSize.width, height: screenSize.height)
@@ -53,6 +53,7 @@ class MenuScene: SKScene {
         quitBtn.name = "startButton"
         
         addChild(background)
+           
         addChild(logo)
         addChild(startBtn)
         addChild(quitBtn)

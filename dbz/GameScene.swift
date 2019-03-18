@@ -46,10 +46,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         myLabel.fontSize = 38
         myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height-50)
         
-        // timer = Timer(timeInterval: 1.0, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
+       //  timer = Timer(timeInterval: 1.0, target: self, selector: Selector("action"), userInfo: nil, repeats: true)
+        
         //timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: Selector("action"), userInfo: nil, repeats: true)
         //timer = Timer.scheduledTimer(withTimeInterval: 1, target: self, selector: Selector, userInfo: nil, repeats: true)
 
+        let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
         
         background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
@@ -100,6 +102,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
    
     }
     
+    @objc func fire(timer: Timer)
+    {
+        print("I got called")
+        time -= 1
+        myLabel.text = String(time)
+    }
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         myLabel.text = "\(time)"
@@ -117,12 +126,5 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
         }
     }
-    
-    func action(){
-        print("I got called")
-        time -= 1
-        myLabel.text = String(time)
-    }
-    
 
 }
