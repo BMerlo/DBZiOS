@@ -9,7 +9,6 @@
 import SpriteKit
 import AVFoundation
 
-
 let wallCategory: UInt32 = 0x1 << 0
 let ballCategory: UInt32 = 0x1 << 1
 let playerCategory: UInt32 = 0x1 << 2
@@ -27,7 +26,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var gokuIdle: SKAction! //Animation //3
     
     let moveJoystick = 🕹(withDiameter: 80)
-
+    let myLabel = SKLabelNode(fontNamed:"Helvetica")
+    var timer = Timer()
+    var time = 60
     
     override init(size: CGSize) {
         super.init(size: size)
@@ -40,6 +41,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             print(error)
         }
        // music.play()
+        
+        myLabel.text = "\(time)"
+        myLabel.fontSize = 38
+        myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height-50)
+        
+        // timer = Timer(timeInterval: 1.0, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
+        //timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: Selector("action"), userInfo: nil, repeats: true)
+        //timer = Timer.scheduledTimer(withTimeInterval: 1, target: self, selector: Selector, userInfo: nil, repeats: true)
+
         
         background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
@@ -78,6 +88,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         addChild(background)
         addChild(gokuSprite)
+        addChild(myLabel)
         addChild(moveJoystick)
         
         gokuSprite.run(SKAction.repeatForever(gokuIdle)) // this way the animation will keep playing for ever
@@ -89,15 +100,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
    
     }
     
-  /*  func didBegin(_ contact: SKPhysicsContact) {
-        
-        if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == wallCategory {
-            print("player first")
-        }
-    }*/
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        myLabel.text = "\(time)"
         
         moveJoystick.on(.move) { [unowned self] joystick in
             guard let gokuSprite = self.gokuSprite else {
@@ -113,4 +118,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
     }
     
+    func action(){
+        print("I got called")
+        time -= 1
+        myLabel.text = String(time)
+    }
+    
+
 }
