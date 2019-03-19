@@ -12,6 +12,7 @@ import AVFoundation
 let wallCategory: UInt32 = 0x1 << 0
 let ballCategory: UInt32 = 0x1 << 1
 let playerCategory: UInt32 = 0x1 << 2
+let enemyCategory: UInt32 = 0x1 << 2
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
@@ -26,6 +27,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var gokuIdle: SKAction! //Animation //3
     
     let moveJoystick = 🕹(withDiameter: 80)
+    var redButton:SKSpriteNode!
+    var blueButton:SKSpriteNode!
     let myLabel = SKLabelNode(fontNamed:"Helvetica")
     var timer = Timer()
     var time = 60
@@ -46,11 +49,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         myLabel.fontSize = 38
         myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height-50)
         
-       //  timer = Timer(timeInterval: 1.0, target: self, selector: Selector("action"), userInfo: nil, repeats: true)
-        
-        //timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: Selector("action"), userInfo: nil, repeats: true)
-        //timer = Timer.scheduledTimer(withTimeInterval: 1, target: self, selector: Selector, userInfo: nil, repeats: true)
-
         let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
         
         background = SKSpriteNode(imageNamed: "background")
@@ -59,6 +57,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         moveJoystick.position = CGPoint(x: screenSize.width * 0.15, y:screenSize.height * 0.2)
         //gokuSprite.name = "goku"
         gokuIdleAtlas = SKTextureAtlas(named: "idle.1") //0
+        
+        blueButton = SKSpriteNode(imageNamed: "blueButton")
+        blueButton.position = CGPoint(x: screenSize.width * 0.85, y:screenSize.height * 0.2)
+        blueButton.size = CGSize(width: screenSize.width * 0.06, height: screenSize.height * 0.08)
+        blueButton.name = "blue"
+        
+        redButton = SKSpriteNode(imageNamed: "redButton")
+        redButton.position = CGPoint(x: screenSize.width * 0.75, y:screenSize.height * 0.15)
+        redButton.size = CGSize(width: screenSize.width * 0.06, height: screenSize.height * 0.08)
+        redButton.name = "red"
+        
         
         gokuIdleFrames = [] //2. Initialize empty texture array
         
@@ -86,12 +95,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         self.physicsBody = borderBody
         self.physicsBody?.categoryBitMask = wallCategory
         self.physicsBody?.contactTestBitMask = playerCategory
+        self.physicsBody?.contactTestBitMask = enemyCategory
         self.physicsWorld.contactDelegate = self
         
         addChild(background)
         addChild(gokuSprite)
         addChild(myLabel)
         addChild(moveJoystick)
+        addChild(blueButton)
+        addChild(redButton)
+
         
         gokuSprite.run(SKAction.repeatForever(gokuIdle)) // this way the animation will keep playing for ever
     }
@@ -104,7 +117,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     @objc func fire(timer: Timer)
     {
-        print("I got called")
+       // print("I got called")
         time -= 1
         myLabel.text = String(time)
     }

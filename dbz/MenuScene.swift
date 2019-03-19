@@ -21,7 +21,7 @@ class MenuScene: SKScene {
     var startBtn: SKSpriteNode!
     var quitBtn: SKSpriteNode!
     //let startBtn = SKSpriteNode(imageNamed: "button_01")
-    
+    let selectionSound = SKAudioNode(fileNamed: "/sounds/selectionSfx.mp3")
     //TODO: - Add a main menu and play button
     override init(size: CGSize) {
         super.init(size: size)
@@ -35,10 +35,16 @@ class MenuScene: SKScene {
                 print(error)
             }
         music.play()
+      
+        //other way to play music
+        
+        selectionSound.autoplayLooped = false;
+        
    
         background = SKSpriteNode(imageNamed: "screenMenu")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
         background.size = CGSize(width: screenSize.width, height: screenSize.height)
+        background.name = "bg"
         
         logo = SKSpriteNode(imageNamed: "logo")
         logo.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2+80)
@@ -50,10 +56,10 @@ class MenuScene: SKScene {
         
         quitBtn = SKSpriteNode(imageNamed: "Quit")
         quitBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2-90)
-        quitBtn.name = "startButton"
+        quitBtn.name = "quitButton"
         
         addChild(background)
-           
+        addChild(selectionSound)
         addChild(logo)
         addChild(startBtn)
         addChild(quitBtn)
@@ -70,11 +76,21 @@ class MenuScene: SKScene {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         self.music.stop()
+                        self.selectionSound.run(SKAction.play());
                         let reveal = SKTransition.reveal(with: .down, duration: 1)
-                        //let newScene = DialoguesScene(size:self.size)
+                       //let newScene = DialoguesScene(size:self.size)
                         let newScene = GameScene(size:self.size)
                         self.view?.presentScene(newScene, transition: reveal)
                         print("Button Pressed")
+                    }
+                }
+                if node.name == "bg" {
+                    if node.contains(t.location(in:self))// do whatever here
+                    {
+                        self.music.stop()
+                        //test area
+                        //let newScene = GameScene(size:self.size)
+                       
                     }
                 }
             })
