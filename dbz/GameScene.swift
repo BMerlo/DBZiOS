@@ -42,9 +42,27 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var vegetaMoveFrames: [SKTexture]! //frames //2
     var vegetaMove: SKAction! //Animation //3
     
+    
+    //SOUNDS
+    let attackSfx = SKAudioNode(fileNamed: "/sounds/attack.wav")
+    let attack2Sfx = SKAudioNode(fileNamed: "/sounds/attack1.wav")
+    let clashSfx = SKAudioNode(fileNamed: "/sounds/clash.wav")
+    let gokuAh = SKAudioNode(fileNamed: "/sounds/gokuAh.mp3")
+    let gokuDies = SKAudioNode(fileNamed: "/sounds/gokuDies.mp3")
+    let gokuPunch = SKAudioNode(fileNamed: "/sounds/punch.mp3")
+    
+    let vegetaAh = SKAudioNode(fileNamed: "/sounds/vegetaAh.mp3")
+    let vegetaDamaged = SKAudioNode(fileNamed: "/sounds/vegetaDamaged.mp3")
+    let vegetaDies = SKAudioNode(fileNamed: "/sounds/vegetaDies.mp3")
+    
+    //UI
     let moveJoystick = 🕹(withDiameter: 80)
     var redButton:SKSpriteNode!
     var blueButton:SKSpriteNode!
+    var backButton:SKSpriteNode!
+    
+    var vegetaAvatar:SKSpriteNode!
+    var gokuAvatar:SKSpriteNode!
         
     let myLabel = SKLabelNode(fontNamed:"Helvetica")
     var timer = Timer()
@@ -61,6 +79,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             print(error)
         }
        // music.play()
+        attackSfx.autoplayLooped = false;
+        attack2Sfx.autoplayLooped = false;
+        clashSfx.autoplayLooped = false;
+        gokuAh.autoplayLooped = false;
+        gokuDies.autoplayLooped = false;
+        gokuPunch.autoplayLooped = false;
+        vegetaAh.autoplayLooped = false;
+        vegetaDamaged.autoplayLooped = false;
+        vegetaDies.autoplayLooped = false;
         
         myLabel.text = "\(time)"
         myLabel.fontSize = 36
@@ -83,9 +110,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         redButton.size = CGSize(width: screenSize.width * 0.06, height: screenSize.height * 0.08)
         redButton.name = "red"
         
+        backButton = SKSpriteNode(imageNamed: "smallerback")
+        backButton.setScale(0.35)
+        backButton.position = CGPoint(x: screenSize.width * 0.98, y:screenSize.height * 0.95)
+        backButton.name = "back"
+        
+        vegetaAvatar = SKSpriteNode(imageNamed: "vegetaPortrait")
+        vegetaAvatar.setScale(0.15)
+        vegetaAvatar.position = CGPoint(x: screenSize.width * 0.93, y:screenSize.height * 0.90)
+        gokuAvatar = SKSpriteNode(imageNamed: "gokuPortrait")
+        gokuAvatar.setScale(0.15)
+        gokuAvatar.position = CGPoint(x: screenSize.width * 0.07, y:screenSize.height * 0.90)
+        
+        //vegetaAvatar.name = "back"
+        
+        
         //GOKU
         //idle
-        gokuIdleAtlas = SKTextureAtlas(named: "idle.1") //0
+        gokuIdleAtlas = SKTextureAtlas(named: "idle2.1") //0
         gokuIdleFrames = [] //2. Initialize empty texture array
         let gokuIdleImages = gokuIdleAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
         //move
@@ -105,9 +147,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let texture = "move_\(i)" //grab each frame in atlas
             gokuMoveFrames.append(gokuMoveAtlas.textureNamed(texture))
         }//add frame to texture array
-        gokuMove = SKAction.animate(with: gokuMoveFrames, timePerFrame: 0.3, resize: false, restore: true)
+        gokuMove = SKAction.animate(with: gokuMoveFrames, timePerFrame: 0.3, resize: true, restore: true)
        
         gokuSprite = SKSpriteNode(texture: SKTexture(imageNamed: "idle_0.png"))
+        gokuSprite.setScale(0.6)
         gokuSprite.position = CGPoint(x: screenSize.width * 0.2, y:screenSize.height/2)
         gokuSprite?.physicsBody = SKPhysicsBody(rectangleOf: (gokuSprite?.frame.size)!)
         gokuSprite?.physicsBody?.affectedByGravity = false;
@@ -165,10 +208,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(gokuSprite)
         addChild(vegetaSprite)
         addChild(myLabel)
+        addChild(vegetaAvatar)
+        addChild(gokuAvatar)
         addChild(moveJoystick)
         addChild(blueButton)
         addChild(redButton)
-
+        addChild(backButton)
+        
+        addChild(attackSfx)
+        addChild(attack2Sfx)
+        addChild(clashSfx)
+        addChild(gokuAh)
+        addChild(gokuDies)
+        addChild(gokuPunch)
+        addChild(vegetaAh)
+      
+        
+        addChild(vegetaDamaged)
+        addChild(vegetaDies)
         
         gokuSprite.run(SKAction.repeatForever(gokuIdle)) // this way the animation will keep playing for ever
         vegetaSprite.run(SKAction.repeatForever(vegetaIdle)) // this way the animation will keep playing for ever
@@ -198,7 +255,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             let pVelocity = joystick.velocity;
             let speed = CGFloat(0.09)
-            
+             self.gokuSprite.run(SKAction.repeat(self.gokuMove, count: 1))
             gokuSprite.position = CGPoint(x: gokuSprite.position.x + (pVelocity.x * speed), y: gokuSprite.position.y + (pVelocity.y * speed))
          //   print(gokuSprite.position)
             
@@ -213,6 +270,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     {
                         
                         self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+                        self.attack2Sfx.run(SKAction.play());
                         print("RED Button Pressed")
                     }
                 }
@@ -220,8 +278,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         
-                        self.gokuSprite.run(SKAction.repeat(self.gokuMove, count: 1))
-                        print("RED Button Pressed")
+                       self.attackSfx.run(SKAction.play());
+                        print("BLUE Button Pressed")
+                    }
+                }
+                if node.name == "back" {
+                    if node.contains(t.location(in:self))// do whatever here
+                    {
+                        
+                        print("BACK Button Pressed")
                     }
                 }
           

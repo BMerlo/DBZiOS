@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A12DA2D52240DAE200D57C56 /* idle2.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A12DA2D42240DAE100D57C56 /* idle2.atlasc */; };
 		A135F823223AC8C40094859A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135F822223AC8C40094859A /* AppDelegate.swift */; };
 		A135F829223AC8C40094859A /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135F828223AC8C40094859A /* GameScene.swift */; };
 		A135F82B223AC8C40094859A /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135F82A223AC8C40094859A /* GameViewController.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A12DA2D42240DAE100D57C56 /* idle2.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = idle2.atlasc; path = dbz/Sprites/Animation/idle2.atlasc; sourceTree = SOURCE_ROOT; };
 		A135F81F223AC8C40094859A /* dbz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dbz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A135F822223AC8C40094859A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A135F828223AC8C40094859A /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 		A17D4B04223B114F00362966 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
+				A12DA2D42240DAE100D57C56 /* idle2.atlasc */,
 				A15CBE462240C30000FCAE0D /* vBlock.atlasc */,
 				A15CBE442240C2FA00FCAE0D /* vAttack.atlasc */,
 				A15CBE422240C2F100FCAE0D /* vIddle.atlasc */,
@@ -199,6 +202,7 @@
 			files = (
 				A15CBE452240C2FA00FCAE0D /* vAttack.atlasc in Resources */,
 				A15CBE382240C1BE00FCAE0D /* attack.atlasc in Resources */,
+				A12DA2D52240DAE200D57C56 /* idle2.atlasc in Resources */,
 				A17D4B01223AFA9200362966 /* Backgrounds in Resources */,
 				A17D4AF5223AF2BC00362966 /* UI in Resources */,
 				A17D4B03223AFAC700362966 /* sounds in Resources */,

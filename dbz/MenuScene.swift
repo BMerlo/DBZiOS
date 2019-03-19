@@ -77,11 +77,9 @@ class MenuScene: SKScene {
                     {
                         self.music.stop()
                         self.selectionSound.run(SKAction.play());
-                        let reveal = SKTransition.reveal(with: .down, duration: 1)
-                       //let newScene = DialoguesScene(size:self.size)
-                        let newScene = GameScene(size:self.size)
-                        self.view?.presentScene(newScene, transition: reveal)
                         print("Button Pressed")
+                        self.perform(#selector(self.changeScene), with: nil, afterDelay: 0.5)
+                        
                     }
                 }
                 if node.name == "quitButton" {
@@ -104,5 +102,13 @@ class MenuScene: SKScene {
                 }
             })
         }
+    }
+    
+    @objc func changeScene(){ //change scene after 1 sec
+        let reveal = SKTransition.reveal(with: .up, duration: 0.6)
+        //let newScene = DialoguesScene(size:self.size)
+        let newScene = GameScene(size:self.size)
+        self.view?.presentScene(newScene, transition: reveal)
+        
     }
 }
