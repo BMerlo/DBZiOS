@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "dbz/GameScene.swift"
+            timestampString = "574674370.4925669"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "GameScene"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "dbz.GameScene.vegetaIdleFrames.getter : Swift.Optional&lt;Swift.Array&lt;__C.SKTexture&gt;&gt;"
+                  moduleName = "dbz"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/boris/Desktop/Github/iOSAssignment2/dbz/GameScene.swift"
+                  timestampString = "574674370.752493"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "114">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "dbz.GameScene.vegetaIdleFrames.setter : Swift.Optional&lt;Swift.Array&lt;__C.SKTexture&gt;&gt;"
+                  moduleName = "dbz"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/boris/Desktop/Github/iOSAssignment2/dbz/GameScene.swift"
+                  timestampString = "574674370.760849"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "128">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

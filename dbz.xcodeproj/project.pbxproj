@@ -13,6 +13,13 @@
 		A135F82E223AC8C40094859A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A135F82C223AC8C40094859A /* Main.storyboard */; };
 		A135F830223AC8C60094859A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A135F82F223AC8C60094859A /* Assets.xcassets */; };
 		A135F833223AC8C60094859A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A135F831223AC8C60094859A /* LaunchScreen.storyboard */; };
+		A15CBE382240C1BE00FCAE0D /* attack.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE372240C1BD00FCAE0D /* attack.atlasc */; };
+		A15CBE3D2240C2B800FCAE0D /* attack2.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE3C2240C2B800FCAE0D /* attack2.atlasc */; };
+		A15CBE3F2240C2DC00FCAE0D /* move.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE3E2240C2DC00FCAE0D /* move.atlasc */; };
+		A15CBE412240C2E500FCAE0D /* vMove.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE402240C2E500FCAE0D /* vMove.atlasc */; };
+		A15CBE432240C2F100FCAE0D /* vIddle.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE422240C2F100FCAE0D /* vIddle.atlasc */; };
+		A15CBE452240C2FA00FCAE0D /* vAttack.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE442240C2FA00FCAE0D /* vAttack.atlasc */; };
+		A15CBE472240C30000FCAE0D /* vBlock.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE462240C30000FCAE0D /* vBlock.atlasc */; };
 		A17D4AE9223AF0D300362966 /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17D4AE8223AF0D300362966 /* MenuScene.swift */; };
 		A17D4AF5223AF2BC00362966 /* UI in Resources */ = {isa = PBXBuildFile; fileRef = A17D4AF4223AF2BC00362966 /* UI */; };
 		A17D4AFB223AF64300362966 /* music in Resources */ = {isa = PBXBuildFile; fileRef = A17D4AFA223AF64300362966 /* music */; };
@@ -33,6 +40,13 @@
 		A135F82F223AC8C60094859A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A135F832223AC8C60094859A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A135F834223AC8C60094859A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A15CBE372240C1BD00FCAE0D /* attack.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = attack.atlasc; path = dbz/Sprites/Animation/attack.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE3C2240C2B800FCAE0D /* attack2.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = attack2.atlasc; path = dbz/Sprites/Animation/attack2.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE3E2240C2DC00FCAE0D /* move.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = move.atlasc; path = dbz/Sprites/Animation/move.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE402240C2E500FCAE0D /* vMove.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = vMove.atlasc; path = dbz/Sprites/Animation/vMove.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE422240C2F100FCAE0D /* vIddle.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = vIddle.atlasc; path = dbz/Sprites/Animation/vIddle.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE442240C2FA00FCAE0D /* vAttack.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = vAttack.atlasc; path = dbz/Sprites/Animation/vAttack.atlasc; sourceTree = SOURCE_ROOT; };
+		A15CBE462240C30000FCAE0D /* vBlock.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = vBlock.atlasc; path = dbz/Sprites/Animation/vBlock.atlasc; sourceTree = SOURCE_ROOT; };
 		A17D4AE8223AF0D300362966 /* MenuScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 		A17D4AF4223AF2BC00362966 /* UI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UI; sourceTree = "<group>"; };
 		A17D4AFA223AF64300362966 /* music */ = {isa = PBXFileReference; lastKnownFileType = folder; name = music; path = Audio/music; sourceTree = SOURCE_ROOT; };
@@ -113,6 +127,13 @@
 		A17D4B04223B114F00362966 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
+				A15CBE462240C30000FCAE0D /* vBlock.atlasc */,
+				A15CBE442240C2FA00FCAE0D /* vAttack.atlasc */,
+				A15CBE422240C2F100FCAE0D /* vIddle.atlasc */,
+				A15CBE402240C2E500FCAE0D /* vMove.atlasc */,
+				A15CBE3E2240C2DC00FCAE0D /* move.atlasc */,
+				A15CBE3C2240C2B800FCAE0D /* attack2.atlasc */,
+				A15CBE372240C1BD00FCAE0D /* attack.atlasc */,
 				A17D4B05223B115B00362966 /* idle.atlasc */,
 			);
 			path = Animations;
@@ -176,12 +197,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A15CBE452240C2FA00FCAE0D /* vAttack.atlasc in Resources */,
+				A15CBE382240C1BE00FCAE0D /* attack.atlasc in Resources */,
 				A17D4B01223AFA9200362966 /* Backgrounds in Resources */,
 				A17D4AF5223AF2BC00362966 /* UI in Resources */,
 				A17D4B03223AFAC700362966 /* sounds in Resources */,
+				A15CBE3F2240C2DC00FCAE0D /* move.atlasc in Resources */,
+				A15CBE472240C30000FCAE0D /* vBlock.atlasc in Resources */,
+				A15CBE3D2240C2B800FCAE0D /* attack2.atlasc in Resources */,
 				A135F82E223AC8C40094859A /* Main.storyboard in Resources */,
+				A15CBE412240C2E500FCAE0D /* vMove.atlasc in Resources */,
 				A17D4AFB223AF64300362966 /* music in Resources */,
 				A135F830223AC8C60094859A /* Assets.xcassets in Resources */,
+				A15CBE432240C2F100FCAE0D /* vIddle.atlasc in Resources */,
 				A135F833223AC8C60094859A /* LaunchScreen.storyboard in Resources */,
 				A17D4B06223B115B00362966 /* idle.atlasc in Resources */,
 			);

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>codeandweb</key>
+	<dict>
+		<key>generator</key>
+		<string>TexturePacker 4.12.1 - https://www.codeandweb.com/texturepacker</string>
+		<key>smartupdate</key>
+		<string>$TexturePacker:SmartUpdate:eb0ce69bdde1e34de7358d2189f372b4:74c3c2f84330a9304a19b6d8d9149d5a:07644f9bf96700b3079b881ae9a56121$</string>
+	</dict>
+	<key>format</key>
+	<string>APPL</string>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>path</key>
+			<string>vMove.1.png</string>
+			<key>size</key>
+			<string>{128,147}</string>
+			<key>subimages</key>
+			<array>
+				<dict>
+					<key>aliases</key>
+					<array/>
+					<key>isFullyOpaque</key>
+					<false/>
+					<key>name</key>
+					<string>vMove_0.png</string>
+					<key>spriteOffset</key>
+					<string>{0,0}</string>
+					<key>spriteSourceSize</key>
+					<string>{62,147}</string>
+					<key>textureRect</key>
+					<string>{{0,0},{62,147}}</string>
+					<key>textureRotated</key>
+					<false/>
+				</dict>
+				<dict>
+					<key>aliases</key>
+					<array/>
+					<key>isFullyOpaque</key>
+					<false/>
+					<key>name</key>
+					<string>vMove_1.png</string>
+					<key>spriteOffset</key>
+					<string>{0,0}</string>
+					<key>spriteSourceSize</key>
+					<string>{64,141}</string>
+					<key>textureRect</key>
+					<string>{{64,0},{64,141}}</string>
+					<key>textureRotated</key>
+					<false/>
+				</dict>
+			</array>
+		</dict>
+	</array>
+	<key>version</key>
+	<integer>1</integer>
+</dict>
+</plist>

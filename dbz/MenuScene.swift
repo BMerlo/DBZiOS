@@ -84,6 +84,15 @@ class MenuScene: SKScene {
                         print("Button Pressed")
                     }
                 }
+                if node.name == "quitButton" {
+                    if node.contains(t.location(in:self))// do whatever here
+                    {
+                        exit(0)
+                        //test area
+                        //let newScene = GameScene(size:self.size)
+                        
+                    }
+                }
                 if node.name == "bg" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
