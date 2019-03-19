@@ -13,7 +13,7 @@ import GameKit
 let wallCategory: UInt32 = 0x1 << 0
 let ballCategory: UInt32 = 0x1 << 1
 let playerCategory: UInt32 = 0x1 << 2
-let enemyCategory: UInt32 = 0x1 << 2
+let enemyCategory: UInt32 = 0x1 << 3
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
@@ -105,7 +105,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let texture = "move_\(i)" //grab each frame in atlas
             gokuMoveFrames.append(gokuMoveAtlas.textureNamed(texture))
         }//add frame to texture array
-        gokuMove = SKAction.animate(with: gokuMoveFrames, timePerFrame: 0.3, resize: true, restore: true)
+        gokuMove = SKAction.animate(with: gokuMoveFrames, timePerFrame: 0.3, resize: false, restore: true)
        
         gokuSprite = SKSpriteNode(texture: SKTexture(imageNamed: "idle_0.png"))
         gokuSprite.position = CGPoint(x: screenSize.width * 0.2, y:screenSize.height/2)
@@ -212,7 +212,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         
-                        //self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+                        self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
                         print("RED Button Pressed")
                     }
                 }
