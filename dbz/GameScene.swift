@@ -10,10 +10,11 @@ import SpriteKit
 import AVFoundation
 import GameKit
 
-let wallCategory: UInt32 = 0x1 << 0
-let ballCategory: UInt32 = 0x1 << 1
-let playerCategory: UInt32 = 0x1 << 2
-let enemyCategory: UInt32 = 0x1 << 3
+let wallCategory: UInt32 = 0x00000001 << 0
+let playerCategory: UInt32 = 0x00000001 << 1
+let enemyCategory: UInt32 = 0x00000001 << 2
+let attackGCategory: UInt32 = 0x00000001 << 3
+let attackVCategory: UInt32 = 0x00000001 << 4
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
@@ -21,6 +22,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var background:SKSpriteNode! //Sprite
     let screenSize: CGRect = UIScreen.main.bounds
     let velocityMultiplier: CGFloat = 0.12
+    
+    var isTimeUp = false;
+    var gokuWon = false;
+    
+    //AI ?
+    var vegetaUp = true;
+    var AIBlock = false;
+    var alreadyBlock = false;
+    
     
     var gokuSprite:SKSpriteNode! //0
     //idle
@@ -31,6 +41,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var gokuMoveAtlas: SKTextureAtlas! //Spritesheet //1
     var gokuMoveFrames: [SKTexture]! //frames //2
     var gokuMove: SKAction! //Animation //3
+    //attack
+    var gokuAttackAtlas: SKTextureAtlas! //Spritesheet //1
+    var gokuAttackFrames: [SKTexture]! //frames //2
+    var gokuAttack: SKAction! //Animation //3
+    //attack2
+    var gokuAttack2Atlas: SKTextureAtlas! //Spritesheet //1
+    var gokuAttack2Frames: [SKTexture]! //frames //2
+    var gokuAttack2: SKAction! //Animation //3
     
     var vegetaSprite:SKSpriteNode! //0
     //idle
@@ -41,6 +59,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var vegetaMoveAtlas: SKTextureAtlas! //Spritesheet //1
     var vegetaMoveFrames: [SKTexture]! //frames //2
     var vegetaMove: SKAction! //Animation //3
+    //attack
+    var vegetaAttackAtlas: SKTextureAtlas! //Spritesheet //1
+    var vegetaAttackFrames: [SKTexture]! //frames //2
+    var vegetaAttack: SKAction! //Animation //3
+    //block
+    var vegetaBlockAtlas: SKTextureAtlas! //Spritesheet //1
+    var vegetaBlockFrames: [SKTexture]! //frames //2
+    var vegetaBlock: SKAction! //Animation //3
     
     
     //SOUNDS
@@ -55,6 +81,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let vegetaDamaged = SKAudioNode(fileNamed: "/sounds/vegetaDamaged.mp3")
     let vegetaDies = SKAudioNode(fileNamed: "/sounds/vegetaDies.mp3")
     
+    
+    
     //UI
     let moveJoystick = 🕹(withDiameter: 80)
     var redButton:SKSpriteNode!
@@ -63,10 +91,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     var vegetaAvatar:SKSpriteNode!
     var gokuAvatar:SKSpriteNode!
+    
+    var gokuBar:SKSpriteNode! //0
+    var vegetaBar:SKSpriteNode! //0
+    var redBar1:SKSpriteNode! //0
+    var redBar2:SKSpriteNode! //0
+    var gHealth = 140.0
+    var vHealth = 140.0
         
     let myLabel = SKLabelNode(fontNamed:"Helvetica")
     var timer = Timer()
     var time = 60
+    
+    var moveBall:SKAction!
+    var moveBall2:SKAction!
+    
+    var gDiedAudio = false;
+    var vDiedAudio = false;
+    var gameOver = false;
     
     override init(size: CGSize) {
         super.init(size: size)
@@ -89,6 +131,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         vegetaDamaged.autoplayLooped = false;
         vegetaDies.autoplayLooped = false;
         
+        moveBall = SKAction.moveBy(x: screenSize.width, y: 0, duration: 1.6)
+        moveBall2 = SKAction.moveBy(x: -screenSize.width, y: 0, duration: 1.8)
+        
         myLabel.text = "\(time)"
         myLabel.fontSize = 36
         myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.88)
@@ -98,7 +143,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
         background.size = CGSize(width: screenSize.width, height: screenSize.height)
+        
         moveJoystick.position = CGPoint(x: screenSize.width * 0.15, y:screenSize.height * 0.2)
+        moveJoystick.zPosition = 4
+        
+        gokuBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: gHealth, height: 30))
+        gokuBar.position = CGPoint(x: screenSize.width * 0.12, y:screenSize.height * 0.90)
+        gokuBar.anchorPoint = CGPoint(x: 0, y: 0.5)
+        redBar1 = SKSpriteNode(color: SKColor.red, size: CGSize(width: gHealth, height: 32))
+        redBar1.position = CGPoint(x: screenSize.width * 0.12 - 1, y:screenSize.height * 0.90)
+        redBar1.anchorPoint = CGPoint(x: 0, y: 0.5)
+        
+        vegetaBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: vHealth, height: 30))
+        vegetaBar.position = CGPoint(x: screenSize.width * 0.85, y:screenSize.height * 0.90)
+        vegetaBar.anchorPoint = CGPoint(x: 1.0, y: 0.5)
+        
+        redBar2 = SKSpriteNode(color: SKColor.red, size: CGSize(width: vHealth, height: 32))
+        redBar2.position = CGPoint(x: screenSize.width * 0.85 + 1, y:screenSize.height * 0.90)
+        redBar2.anchorPoint = CGPoint(x: 1.0, y: 0.5)
         
         blueButton = SKSpriteNode(imageNamed: "blueButton")
         blueButton.position = CGPoint(x: screenSize.width * 0.85, y:screenSize.height * 0.2)
@@ -134,6 +196,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         gokuMoveAtlas = SKTextureAtlas(named: "move.1") //0
         gokuMoveFrames = [] //2. Initialize empty texture array
         let gokuMoveImages = gokuMoveAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
+        //attack
+        gokuAttackAtlas = SKTextureAtlas(named: "attack.1") //0
+        gokuAttackFrames = [] //2. Initialize empty texture array
+        let gokuAttackImages = gokuAttackAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
+        //attack2
+        gokuAttack2Atlas = SKTextureAtlas(named: "attack2.1") //0
+        gokuAttack2Frames = [] //2. Initialize empty texture array
+        let gokuAttack2Images = gokuAttack2Atlas.textureNames.count-1
         
         //4. for loop
         //idle
@@ -146,8 +216,20 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         for i in 0...gokuMoveImages {
             let texture = "move_\(i)" //grab each frame in atlas
             gokuMoveFrames.append(gokuMoveAtlas.textureNamed(texture))
-        }//add frame to texture array
+        }
         gokuMove = SKAction.animate(with: gokuMoveFrames, timePerFrame: 0.3, resize: true, restore: true)
+        //attack
+        for i in 0...gokuAttackImages {
+            let texture = "attack_\(i)" //grab each frame in atlas
+            gokuAttackFrames.append(gokuAttackAtlas.textureNamed(texture))
+        }
+        gokuAttack = SKAction.animate(with: gokuAttackFrames, timePerFrame: 0.3, resize: true, restore: true)
+        //attack2
+        for i in 0...gokuAttack2Images {
+            let texture = "attack2_\(i)" //grab each frame in atlas
+            gokuAttack2Frames.append(gokuAttack2Atlas.textureNamed(texture))
+        }
+        gokuAttack2 = SKAction.animate(with: gokuAttack2Frames, timePerFrame: 0.2, resize: true, restore: true)
        
         gokuSprite = SKSpriteNode(texture: SKTexture(imageNamed: "idle_0.png"))
         gokuSprite.setScale(0.6)
@@ -158,8 +240,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         gokuSprite?.physicsBody?.mass = 2.0
         
         gokuSprite?.physicsBody?.categoryBitMask = playerCategory
-        gokuSprite?.physicsBody?.contactTestBitMask = wallCategory
-        gokuSprite?.physicsBody?.collisionBitMask = wallCategory
+        gokuSprite?.physicsBody?.contactTestBitMask = 00011111
+        gokuSprite?.physicsBody?.collisionBitMask = 00000101
         
         //VEGETA
         //idle
@@ -170,6 +252,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         vegetaMoveAtlas = SKTextureAtlas(named: "vMove.1") //0
         vegetaMoveFrames = [] //2. Initialize empty texture array
         let vegetaMoveImages = vegetaMoveAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
+        //attack
+        vegetaAttackAtlas = SKTextureAtlas(named: "vAttack.1") //0
+        vegetaAttackFrames = [] //2. Initialize empty texture array
+        let vegetaAttackImages = vegetaAttackAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
+        //block
+        vegetaBlockAtlas = SKTextureAtlas(named: "vBlock.1") //0
+        vegetaBlockFrames = [] //2. Initialize empty texture array
+        let vegetaBlockImages = vegetaBlockAtlas.textureNames.count-1//3. count how many frames inside atlas (if this does not work do
         
         //4. for loop
         //idle
@@ -182,8 +272,20 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         for i in 0...vegetaMoveImages {
             let texture = "vMove_\(i)" //grab each frame in atlas
             vegetaMoveFrames.append(vegetaMoveAtlas.textureNamed(texture))
-        }//add frame to texture array
+        }
         vegetaMove = SKAction.animate(with: vegetaMoveFrames, timePerFrame: 0.3, resize: true, restore: true)
+        //attack
+        for i in 0...vegetaAttackImages {
+            let texture = "vAttack_\(i)" //grab each frame in atlas
+            vegetaAttackFrames.append(vegetaAttackAtlas.textureNamed(texture))
+        }
+        vegetaAttack = SKAction.animate(with: vegetaAttackFrames, timePerFrame: 0.3, resize: true, restore: true)
+        //block
+        for i in 0...vegetaBlockImages {
+            let texture = "vBlock_\(i)" //grab each frame in atlas
+            vegetaBlockFrames.append(vegetaBlockAtlas.textureNamed(texture))
+        }
+        vegetaBlock = SKAction.animate(with: vegetaBlockFrames, timePerFrame: 0.3, resize: true, restore: true)
         
         vegetaSprite = SKSpriteNode(texture: SKTexture(imageNamed: "vidle_0.png"))
         vegetaSprite.setScale(0.6)
@@ -194,8 +296,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         vegetaSprite?.physicsBody?.mass = 2.0
         
         vegetaSprite?.physicsBody?.categoryBitMask = enemyCategory
-        vegetaSprite?.physicsBody?.contactTestBitMask = wallCategory
-        vegetaSprite?.physicsBody?.collisionBitMask = wallCategory
+        vegetaSprite?.physicsBody?.contactTestBitMask = 00011111
+        vegetaSprite?.physicsBody?.collisionBitMask = 00001111;
         
         let borderBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.physicsBody = borderBody
@@ -214,6 +316,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(blueButton)
         addChild(redButton)
         addChild(backButton)
+        
+        addChild(redBar1)
+        addChild(gokuBar)
+        addChild(redBar2)
+        addChild(vegetaBar)
+        
         
         addChild(attackSfx)
         addChild(attack2Sfx)
@@ -237,6 +345,52 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
    
     }
     
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == wallCategory {
+            print("player first")
+        }
+        
+        if contact.bodyA.categoryBitMask == wallCategory && contact.bodyB.categoryBitMask == playerCategory {
+            
+        }
+        
+        if contact.bodyA.categoryBitMask == wallCategory && contact.bodyB.categoryBitMask == enemyCategory {
+            vegetaUp = !vegetaUp;
+        }
+        
+        if contact.bodyA.categoryBitMask == wallCategory && contact.bodyB.categoryBitMask == attackGCategory {
+            contact.bodyB.node?.removeFromParent()
+            print("attackG removed")
+        }
+        
+        if contact.bodyA.categoryBitMask == wallCategory && contact.bodyB.categoryBitMask == attackVCategory {
+            contact.bodyB.node?.removeFromParent()
+            print("attackV removed")
+        }
+        
+        if contact.bodyA.categoryBitMask == enemyCategory && contact.bodyB.categoryBitMask == attackGCategory {
+            contact.bodyB.node?.removeFromParent()
+            vHealth -= 15
+            self.vegetaDamaged.run(SKAction.play());
+            
+        }
+        
+        if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == enemyCategory {
+            let moveBack = SKAction.moveBy(x: -10, y: 0, duration: 0.3)
+            gokuSprite.run(moveBack)
+            print("player collided enemy")
+        }
+        
+        if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == attackVCategory {
+            contact.bodyB.node?.removeFromParent()
+            self.gokuAh.run(SKAction.play());
+            gHealth -= 15
+            print("player collided enemyB")
+        }
+        
+    }
+    
     @objc func fire(timer: Timer)
     {
        // print("I got called")
@@ -248,6 +402,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         // Called before each frame is rendered
         myLabel.text = "\(time)"
         
+        //AI?
+        if(vegetaSprite.position.x != screenSize.width * 0.8){
+            let moveOrigin = SKAction.moveTo(x: screenSize.width * 0.8, duration: 0.3)
+            
+            vegetaSprite.run(moveOrigin)
+            
+        }
+        
+        /*var attack1Delay = 0.0;
+        attack1Delay += currentTime;
+        print(attack1Delay)*/
+        
         moveJoystick.on(.move) { [unowned self] joystick in
             guard let gokuSprite = self.gokuSprite else {
                 return
@@ -255,11 +421,111 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             let pVelocity = joystick.velocity;
             let speed = CGFloat(0.09)
-             self.gokuSprite.run(SKAction.repeat(self.gokuMove, count: 1))
+            self.gokuSprite.run(SKAction.repeat(self.gokuMove, count: 1))
             gokuSprite.position = CGPoint(x: gokuSprite.position.x + (pVelocity.x * speed), y: gokuSprite.position.y + (pVelocity.y * speed))
          //   print(gokuSprite.position)
             
         }
+        
+        if(isTimeUp){
+            if gokuWon && !gameOver{
+                self.perform(#selector(self.changeScene), with: nil, afterDelay: 2.0)
+                gameOver = true
+                
+            }
+            else if !gokuWon && !gameOver{
+               self.perform(#selector(self.changeScene2), with: nil, afterDelay: 2.0)
+                gameOver = true
+            }
+            
+        }
+        
+        self.gokuBar.size = self.CGSizeMake(CGFloat(self.gHealth), 30.0)
+        self.vegetaBar.size = self.CGSizeMake(CGFloat(self.vHealth), 30.0)
+        
+        if(gHealth > vHealth){
+            gokuWon = true
+        }
+        else {
+            gokuWon = false
+        }
+        
+        if(gHealth < 0){
+            gHealth = 0
+        }
+        
+        if(vHealth < 0){
+            vHealth = 0
+        }
+        
+        if vHealth == 0 {
+            if !vDiedAudio {
+            vegetaDies.run(SKAction.play());
+                vDiedAudio = true
+                isTimeUp = true
+                moveJoystick.removeFromParent()
+                redButton.removeFromParent()
+                blueButton.removeFromParent()
+                vegetaSprite.removeFromParent()
+            }
+        }
+        
+        if(gHealth == 0){
+            if !gDiedAudio {
+                gokuDies.run(SKAction.play());
+                gDiedAudio = true
+                isTimeUp = true
+                moveJoystick.removeFromParent()
+                redButton.removeFromParent()
+                blueButton.removeFromParent()
+                gokuSprite.removeFromParent()
+            }
+        }
+        
+        //AIVE
+        
+        if(vegetaUp){
+            if AIBlock{
+                if !alreadyBlock  {
+                    self.vegetaSprite.run(SKAction.repeat(self.vegetaBlock,  count: 1))
+                    alreadyBlock = true;
+                }
+                else{
+                    
+                }
+             
+            }
+            else {
+                 vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
+            }
+            
+           
+        }
+        else{
+            if AIBlock{
+                if !alreadyBlock  {
+                    self.vegetaSprite.run(SKAction.repeat(self.vegetaBlock,  count: 1))
+                    alreadyBlock = true;
+                }
+                else{
+                    
+                }
+                
+            }
+            else {
+                 vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
+                
+            }
+           
+        }
+        
+        if(vegetaSprite.speed > 0){
+            self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+        }
+        else {
+              self.vegetaSprite.run(SKAction.repeatForever(vegetaIdle))
+        }
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -268,24 +534,62 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 if node.name == "red" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
-                        
-                        self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
                         self.attack2Sfx.run(SKAction.play());
+                        self.gokuSprite.run(SKAction.repeat(self.gokuAttack,  count: 1))
+                        
+                       self.AIBlock = !self.AIBlock
+                        
+                        
                         print("RED Button Pressed")
                     }
                 }
                 if node.name == "blue" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
+                        self.alreadyBlock = false
+                        //self.vegetaSprite.position = CGPoint(x: self.vegetaSprite.position.x, y: self.vegetaSprite.position.y - 10)
+                        self.attackSfx.run(SKAction.play());
+                        self.gokuSprite.run(SKAction.repeat(self.gokuAttack2,  count: 1))
                         
-                       self.attackSfx.run(SKAction.play());
-                        print("BLUE Button Pressed")
+                        //ATTACKS
+                        var gokuBall:SKSpriteNode!
+                        gokuBall = SKSpriteNode(imageNamed: "ballGoku")
+                        gokuBall.setScale(0.5)
+                        gokuBall.position = CGPoint(x: self.gokuSprite.position.x + 10, y:self.gokuSprite.position.y)
+                        gokuBall.run(self.moveBall)
+                        
+                        gokuBall?.physicsBody = SKPhysicsBody(rectangleOf: (gokuBall?.frame.size)!)
+                        gokuBall?.physicsBody?.affectedByGravity = false;
+                        gokuBall?.physicsBody?.allowsRotation = false;
+                        gokuBall?.physicsBody?.mass = 2.0
+                        gokuBall?.physicsBody?.categoryBitMask = attackGCategory
+                        gokuBall?.physicsBody?.contactTestBitMask = 00011111
+                        gokuBall?.physicsBody?.collisionBitMask = 00010001;
+                        
+                        self.addChild(gokuBall)
                     }
                 }
                 if node.name == "back" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
+                        self.attackSfx.run(SKAction.play());
+                        self.vegetaSprite.run(SKAction.repeat(self.vegetaAttack,  count: 1))
+                        var vegetaBall:SKSpriteNode!
+                        vegetaBall = SKSpriteNode(imageNamed: "ballVegeta")
+                        vegetaBall.zPosition = 3
+                        vegetaBall.setScale(0.5)
+                        vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 10, y:self.vegetaSprite.position.y)
+                        vegetaBall.run(self.moveBall2)
                         
+                        vegetaBall?.physicsBody = SKPhysicsBody(rectangleOf: (vegetaBall?.frame.size)!)
+                        vegetaBall?.physicsBody?.affectedByGravity = false;
+                        vegetaBall?.physicsBody?.allowsRotation = false;
+                        vegetaBall?.physicsBody?.mass = 2.0
+                        vegetaBall?.physicsBody?.categoryBitMask = attackVCategory
+                        vegetaBall?.physicsBody?.contactTestBitMask = 00011111
+                        vegetaBall?.physicsBody?.collisionBitMask = 00001001;
+                        
+                        self.addChild(vegetaBall)
                         print("BACK Button Pressed")
                     }
                 }
@@ -294,4 +598,20 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
     }
 
+    @objc func changeScene(){ //change scene after 2 sec
+        let reveal = SKTransition.reveal(with: .up, duration: 0.6)
+        let newScene = GameOverScene(size:self.size)
+        self.view?.presentScene(newScene, transition: reveal)
+    }
+    
+    
+    @objc func changeScene2(){ //change scene after 2 sec
+        let reveal = SKTransition.reveal(with: .up, duration: 0.6)
+        let newScene = GameOverScene2(size:self.size)
+        self.view?.presentScene(newScene, transition: reveal)
+    }
+    
+    func CGSizeMake(_ width: CGFloat, _ height: CGFloat) -> CGSize {
+        return CGSize(width: width, height: height)
+    }
 }

@@ -14,6 +14,7 @@
 		A135F82E223AC8C40094859A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A135F82C223AC8C40094859A /* Main.storyboard */; };
 		A135F830223AC8C60094859A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A135F82F223AC8C60094859A /* Assets.xcassets */; };
 		A135F833223AC8C60094859A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A135F831223AC8C60094859A /* LaunchScreen.storyboard */; };
+		A15C7ACC2242260600CBD049 /* GameOverScene2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C7ACB2242260600CBD049 /* GameOverScene2.swift */; };
 		A15CBE382240C1BE00FCAE0D /* attack.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE372240C1BD00FCAE0D /* attack.atlasc */; };
 		A15CBE3D2240C2B800FCAE0D /* attack2.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE3C2240C2B800FCAE0D /* attack2.atlasc */; };
 		A15CBE3F2240C2DC00FCAE0D /* move.atlasc in Resources */ = {isa = PBXBuildFile; fileRef = A15CBE3E2240C2DC00FCAE0D /* move.atlasc */; };
@@ -42,6 +43,7 @@
 		A135F82F223AC8C60094859A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A135F832223AC8C60094859A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A135F834223AC8C60094859A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A15C7ACB2242260600CBD049 /* GameOverScene2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene2.swift; sourceTree = "<group>"; };
 		A15CBE372240C1BD00FCAE0D /* attack.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = attack.atlasc; path = dbz/Sprites/Animation/attack.atlasc; sourceTree = SOURCE_ROOT; };
 		A15CBE3C2240C2B800FCAE0D /* attack2.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = attack2.atlasc; path = dbz/Sprites/Animation/attack2.atlasc; sourceTree = SOURCE_ROOT; };
 		A15CBE3E2240C2DC00FCAE0D /* move.atlasc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = move.atlasc; path = dbz/Sprites/Animation/move.atlasc; sourceTree = SOURCE_ROOT; };
@@ -97,6 +99,7 @@
 				A17D4AFE223AF9A500362966 /* DialoguesScene.swift */,
 				A135F828223AC8C40094859A /* GameScene.swift */,
 				A17D4AFC223AF96500362966 /* GameOverScene.swift */,
+				A15C7ACB2242260600CBD049 /* GameOverScene2.swift */,
 				A135F822223AC8C40094859A /* AppDelegate.swift */,
 				A135F82A223AC8C40094859A /* GameViewController.swift */,
 				A135F82C223AC8C40094859A /* Main.storyboard */,
@@ -231,6 +234,7 @@
 				A17D4AE9223AF0D300362966 /* MenuScene.swift in Sources */,
 				A135F82B223AC8C40094859A /* GameViewController.swift in Sources */,
 				A1C7D00E223CA05D0058267B /* TLAnalogJoystick.swift in Sources */,
+				A15C7ACC2242260600CBD049 /* GameOverScene2.swift in Sources */,
 				A17D4AFF223AF9A500362966 /* DialoguesScene.swift in Sources */,
 				A135F823223AC8C40094859A /* AppDelegate.swift in Sources */,
 			);

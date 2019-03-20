@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 import AVFoundation
 
-class GameOverScene: SKScene {
+class GameOverScene2: SKScene {
     
     var music:AVAudioPlayer = AVAudioPlayer()
     var background:SKSpriteNode! //Sprite
@@ -33,23 +33,22 @@ class GameOverScene: SKScene {
         }
         music.play()
         
-        background = SKSpriteNode(imageNamed: "gokuWon2")
+        background = SKSpriteNode(imageNamed: "vegetaSmile2")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
         background.size = CGSize(width: screenSize.width, height: screenSize.height)
         background.name = "bg"
         
         startBtn = SKSpriteNode(imageNamed: "Start")
-        startBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.7)
+        startBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.70)
         startBtn.name = "startButton"
         
         quitBtn = SKSpriteNode(imageNamed: "Quit")
-        quitBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.5)
+        quitBtn.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.50)
         quitBtn.name = "quitButton"
         
-        addChild(background)        
+        addChild(background)
         addChild(startBtn)
         addChild(quitBtn)
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -97,4 +96,5 @@ class GameOverScene: SKScene {
         self.view?.presentScene(newScene, transition: reveal)
         
     }
+    
 }
