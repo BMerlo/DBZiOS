@@ -46,22 +46,6 @@
 					<key>spriteOffset</key>
 					<string>{0,0}</string>
 					<key>spriteSourceSize</key>
-					<string>{125,125}</string>
-					<key>textureRect</key>
-					<string>{{125,0},{125,125}}</string>
-					<key>textureRotated</key>
-					<false/>
-				</dict>
-				<dict>
-					<key>aliases</key>
-					<array/>
-					<key>isFullyOpaque</key>
-					<false/>
-					<key>name</key>
-					<string>attack2_2.png</string>
-					<key>spriteOffset</key>
-					<string>{0,0}</string>
-					<key>spriteSourceSize</key>
 					<string>{97,134}</string>
 					<key>textureRect</key>
 					<string>{{250,0},{97,134}}</string>
@@ -74,7 +58,7 @@
 					<key>isFullyOpaque</key>
 					<false/>
 					<key>name</key>
-					<string>attack2_3.png</string>
+					<string>attack2_2.png</string>
 					<key>spriteOffset</key>
 					<string>{0,0}</string>
 					<key>spriteSourceSize</key>
@@ -90,7 +74,7 @@
 					<key>isFullyOpaque</key>
 					<false/>
 					<key>name</key>
-					<string>attack2_4.png</string>
+					<string>attack2_3.png</string>
 					<key>spriteOffset</key>
 					<string>{0,0}</string>
 					<key>spriteSourceSize</key>
@@ -106,7 +90,7 @@
 					<key>isFullyOpaque</key>
 					<false/>
 					<key>name</key>
-					<string>attack2_5.png</string>
+					<string>attack2_4.png</string>
 					<key>spriteOffset</key>
 					<string>{0,0}</string>
 					<key>spriteSourceSize</key>

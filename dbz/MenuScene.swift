@@ -8,11 +8,10 @@
 
 import Foundation
 import SpriteKit
-import AVFoundation
 
 class MenuScene: SKScene {
 
-    var music:AVAudioPlayer = AVAudioPlayer()
+    //var music:AVAudioPlayer = AVAudioPlayer()
     //TODO: - Use this to create a menu scene
     var background:SKSpriteNode! //Sprite
     var logo:SKSpriteNode!
@@ -22,11 +21,14 @@ class MenuScene: SKScene {
     var quitBtn: SKSpriteNode!
     //let startBtn = SKSpriteNode(imageNamed: "button_01")
     let selectionSound = SKAudioNode(fileNamed: "/sounds/selectionSfx.mp3")
+    let backgroundMusic = SKAudioNode(fileNamed: "/music/menu.mp3")
     //TODO: - Add a main menu and play button
     override init(size: CGSize) {
         super.init(size: size)
+        
+        addChild(backgroundMusic)
        
-       let musicFile =	Bundle.main.path(forResource: "music/menu", ofType: ".mp3")
+     /*  let musicFile =	Bundle.main.path(forResource: "music/menu", ofType: ".mp3")
         
         do{
             try music = AVAudioPlayer (contentsOf: URL (fileURLWithPath: musicFile!))
@@ -34,7 +36,9 @@ class MenuScene: SKScene {
             catch{
                 print(error)
             }
-        music.play()
+        music.play()*/
+        
+        //
       
         //other way to play music
         
@@ -75,7 +79,8 @@ class MenuScene: SKScene {
                 if node.name == "startButton" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
-                        self.music.stop()
+                        //self.music.stop()
+                        self.backgroundMusic.run(SKAction.stop())
                         self.selectionSound.run(SKAction.play());
                         print("Button Pressed")
                         self.perform(#selector(self.changeScene), with: nil, afterDelay: 0.5)
@@ -91,23 +96,14 @@ class MenuScene: SKScene {
                         
                     }
                 }
-                if node.name == "bg" {
-                    if node.contains(t.location(in:self))// do whatever here
-                    {
-                        self.music.stop()
-                        //test area
-                        //let newScene = GameScene(size:self.size)
-                       
-                    }
-                }
             })
         }
     }
     
     @objc func changeScene(){ //change scene after 1 sec
         let reveal = SKTransition.reveal(with: .up, duration: 0.6)
-        //let newScene = DialoguesScene(size:self.size)
-        let newScene = GameScene(size:self.size)
+        let newScene = DialoguesScene(size:self.size)
+        //let newScene = GameScene(size:self.size)
         self.view?.presentScene(newScene, transition: reveal)
         
     }

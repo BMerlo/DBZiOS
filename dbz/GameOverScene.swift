@@ -8,11 +8,9 @@
 
 import Foundation
 import SpriteKit
-import AVFoundation
 
 class GameOverScene: SKScene {
     
-    var music:AVAudioPlayer = AVAudioPlayer()
     var background:SKSpriteNode! //Sprite
     
     let screenSize: CGRect = UIScreen.main.bounds
@@ -22,16 +20,6 @@ class GameOverScene: SKScene {
     
     override init(size: CGSize) {
         super.init(size: size)
-        
-        let musicFile =    Bundle.main.path(forResource: "music/menu", ofType: ".mp3")
-        
-        do{
-            try music = AVAudioPlayer (contentsOf: URL (fileURLWithPath: musicFile!))
-        }
-        catch{
-            print(error)
-        }
-        music.play()
         
         background = SKSpriteNode(imageNamed: "gokuWon2")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
@@ -62,7 +50,6 @@ class GameOverScene: SKScene {
                 if node.name == "startButton" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
-                        self.music.stop()
                         print("Button Pressed")
                         self.perform(#selector(self.changeScene), with: nil, afterDelay: 0.5)
                         
@@ -72,17 +59,6 @@ class GameOverScene: SKScene {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         exit(0)
-                        //test area
-                        //let newScene = GameScene(size:self.size)
-                        
-                    }
-                }
-                if node.name == "bg" {
-                    if node.contains(t.location(in:self))// do whatever here
-                    {
-                        self.music.stop()
-                        //test area
-                        //let newScene = GameScene(size:self.size)
                         
                     }
                 }

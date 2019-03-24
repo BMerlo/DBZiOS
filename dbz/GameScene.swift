@@ -7,7 +7,6 @@
 //
 
 import SpriteKit
-import AVFoundation
 import GameKit
 
 let wallCategory: UInt32 = 0x00000001 << 0
@@ -17,11 +16,13 @@ let attackGCategory: UInt32 = 0x00000001 << 3
 let attackVCategory: UInt32 = 0x00000001 << 4
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
-    
-    var music:AVAudioPlayer = AVAudioPlayer()
+
     var background:SKSpriteNode! //Sprite
     let screenSize: CGRect = UIScreen.main.bounds
     let velocityMultiplier: CGFloat = 0.12
+    let fightMusic = SKAudioNode(fileNamed: "/music/fight.mp3")
+    
+    //self.fightMusic.run(SKAction.stop())
     
     var isTimeUp = false;
     var gokuWon = false;
@@ -68,7 +69,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var vegetaBlockFrames: [SKTexture]! //frames //2
     var vegetaBlock: SKAction! //Animation //3
     
-    
     //SOUNDS
     let attackSfx = SKAudioNode(fileNamed: "/sounds/attack.wav")
     let attack2Sfx = SKAudioNode(fileNamed: "/sounds/attack1.wav")
@@ -80,8 +80,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let vegetaAh = SKAudioNode(fileNamed: "/sounds/vegetaAh.mp3")
     let vegetaDamaged = SKAudioNode(fileNamed: "/sounds/vegetaDamaged.mp3")
     let vegetaDies = SKAudioNode(fileNamed: "/sounds/vegetaDies.mp3")
-    
-    
     
     //UI
     let moveJoystick = 🕹(withDiameter: 80)
@@ -110,17 +108,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var vDiedAudio = false;
     var gameOver = false;
     
+    var coolDownAttack1 = 1.0
+    var coolDownAttack1passed = 0.0
+    var boolAttack1 = false;
+    
     override init(size: CGSize) {
         super.init(size: size)
-        let musicFile = Bundle.main.path(forResource: "music/fight", ofType: ".mp3")
         
-        do{
-            try music = AVAudioPlayer (contentsOf: URL (fileURLWithPath: musicFile!))
-        }
-        catch{
-            print(error)
-        }
-       // music.play()
+        addChild(fightMusic)
         attackSfx.autoplayLooped = false;
         attack2Sfx.autoplayLooped = false;
         clashSfx.autoplayLooped = false;
@@ -184,9 +179,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         gokuAvatar.setScale(0.15)
         gokuAvatar.position = CGPoint(x: screenSize.width * 0.07, y:screenSize.height * 0.90)
         
-        //vegetaAvatar.name = "back"
-        
-        
         //GOKU
         //idle
         gokuIdleAtlas = SKTextureAtlas(named: "idle2.1") //0
@@ -223,7 +215,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             let texture = "attack_\(i)" //grab each frame in atlas
             gokuAttackFrames.append(gokuAttackAtlas.textureNamed(texture))
         }
-        gokuAttack = SKAction.animate(with: gokuAttackFrames, timePerFrame: 0.3, resize: true, restore: true)
+        gokuAttack = SKAction.animate(with: gokuAttackFrames, timePerFrame: 0.2, resize: true, restore: true)
         //attack2
         for i in 0...gokuAttack2Images {
             let texture = "attack2_\(i)" //grab each frame in atlas
@@ -322,7 +314,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(redBar2)
         addChild(vegetaBar)
         
-        
         addChild(attackSfx)
         addChild(attack2Sfx)
         addChild(clashSfx)
@@ -330,7 +321,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(gokuDies)
         addChild(gokuPunch)
         addChild(vegetaAh)
-      
         
         addChild(vegetaDamaged)
         addChild(vegetaDies)
@@ -377,9 +367,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
         
         if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == enemyCategory {
+
             let moveBack = SKAction.moveBy(x: -10, y: 0, duration: 0.3)
             gokuSprite.run(moveBack)
             print("player collided enemy")
+            
         }
         
         if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == attackVCategory {
@@ -410,9 +402,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
         }
         
-        /*var attack1Delay = 0.0;
-        attack1Delay += currentTime;
-        print(attack1Delay)*/
         
         moveJoystick.on(.move) { [unowned self] joystick in
             guard let gokuSprite = self.gokuSprite else {
@@ -425,6 +414,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             gokuSprite.position = CGPoint(x: gokuSprite.position.x + (pVelocity.x * speed), y: gokuSprite.position.y + (pVelocity.y * speed))
          //   print(gokuSprite.position)
             
+        }
+        
+        if time <= 0{
+            isTimeUp = true
         }
         
         if(isTimeUp){
@@ -467,6 +460,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 redButton.removeFromParent()
                 blueButton.removeFromParent()
                 vegetaSprite.removeFromParent()
+                myLabel.removeFromParent()
             }
         }
         
@@ -479,12 +473,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 redButton.removeFromParent()
                 blueButton.removeFromParent()
                 gokuSprite.removeFromParent()
+                myLabel.removeFromParent()
             }
         }
         
         //AIVE
         
-        if(vegetaUp){
+      /*  if(vegetaUp){
             if AIBlock{
                 if !alreadyBlock  {
                     self.vegetaSprite.run(SKAction.repeat(self.vegetaBlock,  count: 1))
@@ -504,8 +499,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         else{
             if AIBlock{
                 if !alreadyBlock  {
-                    self.vegetaSprite.run(SKAction.repeat(self.vegetaBlock,  count: 1))
-                    alreadyBlock = true;
+                    self.vegetaSprite.run(SKAction.repeatForever(self.vegetaBlock), completion: {
+                    self.alreadyBlock = true;
+                    })
                 }
                 else{
                     
@@ -517,7 +513,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 
             }
            
-        }
+        }*/
         
         if(vegetaSprite.speed > 0){
             self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
@@ -525,7 +521,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         else {
               self.vegetaSprite.run(SKAction.repeatForever(vegetaIdle))
         }
+        /*
+        coolDownAttack1passed += currentTime;
         
+        if coolDownAttack1passed > coolDownAttack1{
+            boolAttack1 = false;
+            coolDownAttack1passed = 0;
+        }*/
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -535,12 +537,26 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         self.attack2Sfx.run(SKAction.play());
-                        self.gokuSprite.run(SKAction.repeat(self.gokuAttack,  count: 1))
-                        
-                       self.AIBlock = !self.AIBlock
-                        
-                        
-                        print("RED Button Pressed")
+                        //self.gokuSprite.run(SKAction.repeat(self.gokuAttack,  count: 1))
+                        self.gokuSprite.run(self.gokuAttack, completion: {
+                        self.boolAttack1 = true;
+                        self.AIBlock = !self.AIBlock
+                            if self.gokuSprite.position.x < self.vegetaSprite.position.x - 38 &&
+                                self.gokuSprite.position.x > 400 &&
+                                self.gokuSprite.position.y < self.vegetaSprite.position.y + 80 &&
+                                self.gokuSprite.position.y > self.vegetaSprite.position.y - 80
+                                {
+                                    self.vHealth -= 20;
+                                    self.vegetaDamaged.run(SKAction.play());
+                            }
+                            //("\(ship.position.x)")
+                            print("goku x " + "\(self.gokuSprite.position.x)")
+                            print("goku y " + "\(self.gokuSprite.position.y)")
+                            print("veg x " + "\(self.vegetaSprite.position.x - 42)")
+                            print("veg y + 80 " + "\(self.vegetaSprite.position.y + 80)")
+                            print("veg y - 80 " + "\(self.vegetaSprite.position.y - 80)")
+                        //print("RED Button Pressed")
+                        })
                     }
                 }
                 if node.name == "blue" {
@@ -549,7 +565,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         self.alreadyBlock = false
                         //self.vegetaSprite.position = CGPoint(x: self.vegetaSprite.position.x, y: self.vegetaSprite.position.y - 10)
                         self.attackSfx.run(SKAction.play());
-                        self.gokuSprite.run(SKAction.repeat(self.gokuAttack2,  count: 1))
+                        self.gokuSprite.run(self.gokuAttack2,  completion: {
                         
                         //ATTACKS
                         var gokuBall:SKSpriteNode!
@@ -567,6 +583,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         gokuBall?.physicsBody?.collisionBitMask = 00010001;
                         
                         self.addChild(gokuBall)
+                        })
                     }
                 }
                 if node.name == "back" {
@@ -599,6 +616,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
 
     @objc func changeScene(){ //change scene after 2 sec
+        fightMusic.run(SKAction.stop())
         let reveal = SKTransition.reveal(with: .up, duration: 0.6)
         let newScene = GameOverScene(size:self.size)
         self.view?.presentScene(newScene, transition: reveal)
@@ -606,6 +624,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
     
     @objc func changeScene2(){ //change scene after 2 sec
+        fightMusic.run(SKAction.stop())
         let reveal = SKTransition.reveal(with: .up, duration: 0.6)
         let newScene = GameOverScene2(size:self.size)
         self.view?.presentScene(newScene, transition: reveal)
