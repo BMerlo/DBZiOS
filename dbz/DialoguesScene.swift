@@ -95,9 +95,7 @@ class DialoguesScene: SKScene {
                         self.dialogue4File.run(SKAction.stop());
                         self.dialogueMusic.run(SKAction.stop());
                         //self.dialogue2.removeFromParent()
-                        let reveal = SKTransition.reveal(with: .down, duration: 1)
-                        let newScene = GameScene(size:self.size)
-                        self.view?.presentScene(newScene, transition: reveal)
+                    self.perform(#selector(self.changeScene), with: nil, afterDelay: 0.5)
                         
                         
                     }
@@ -109,6 +107,14 @@ class DialoguesScene: SKScene {
     override func update(_ currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
 
+    }
+    
+    @objc func changeScene(){ //change scene after 1 sec
+        let reveal = SKTransition.reveal(with: .up, duration: 0.6)
+        //let newScene = DialoguesScene(size:self.size)
+        let newScene = GameScene(size:self.size)
+        self.view?.presentScene(newScene, transition: reveal)
+        
     }
     
 }

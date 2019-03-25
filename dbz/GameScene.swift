@@ -30,8 +30,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     //AI ?
     var vegetaUp = true;
     var AIBlock = false;
-    var alreadyBlock = false;
+    var attackVegetaDelay = 1.0
+    var vegetaCanAttack = true;
     
+    var RandomNumber = 1
     
     var gokuSprite:SKSpriteNode! //0
     //idle
@@ -99,7 +101,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
     let myLabel = SKLabelNode(fontNamed:"Helvetica")
     var timer = Timer()
-    var time = 60
+    var timerAI = Timer()
+    var timerDelay = Timer()
+    var time = 180
     
     var moveBall:SKAction!
     var moveBall2:SKAction!
@@ -134,7 +138,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.88)
         
         let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
-  
+    
+        let timerAI = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(VegetaRandomAI(timer:)), userInfo: nil, repeats: true)
+        
+        let timerDelay = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(VegetaDeleayAttack(timer:)), userInfo: nil, repeats: true)
+        
         background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
         background.size = CGSize(width: screenSize.width, height: screenSize.height)
@@ -307,7 +315,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(moveJoystick)
         addChild(blueButton)
         addChild(redButton)
-        addChild(backButton)
+       // addChild(backButton) added to debug AI
         
         addChild(redBar1)
         addChild(gokuBar)
@@ -361,8 +369,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         if contact.bodyA.categoryBitMask == enemyCategory && contact.bodyB.categoryBitMask == attackGCategory {
             contact.bodyB.node?.removeFromParent()
-            vHealth -= 15
-            self.vegetaDamaged.run(SKAction.play());
+            if AIBlock {
+                vHealth -= 5
+            self.clashSfx.run(SKAction.play());
+            }
+            else {
+                vHealth -= 15
+                self.vegetaDamaged.run(SKAction.play());
+            }
+            
             
         }
         
@@ -378,7 +393,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
             self.gokuAh.run(SKAction.play());
             gHealth -= 15
-            print("player collided enemyB")
+            print("player collided enemyBall")
+        }
+        
+        if contact.bodyA.categoryBitMask == attackVCategory && contact.bodyB.categoryBitMask == attackGCategory {
+            //if ki blasts collide they will destroy each other
+            contact.bodyB.node?.removeFromParent()
+            contact.bodyA.node?.removeFromParent()
+            
         }
         
     }
@@ -390,10 +412,28 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         myLabel.text = String(time)
     }
     
+    @objc func VegetaRandomAI(timer: Timer)
+    {
+        // print("I got called")
+        RandomNumber = Int.random(in: 0 ..< 100)
+        
+    }
+    
+    @objc func VegetaDeleayAttack(timer: Timer)
+    {
+        // print("I got called")
+        vegetaCanAttack = true;
+        
+    }
+    
+    @objc func VegetaRandomAI(){
+        RandomNumber = Int.random(in: 0 ..< 100)
+    }
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         myLabel.text = "\(time)"
-        
+       
         //AI?
         if(vegetaSprite.position.x != screenSize.width * 0.8){
             let moveOrigin = SKAction.moveTo(x: screenSize.width * 0.8, duration: 0.3)
@@ -401,6 +441,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             vegetaSprite.run(moveOrigin)
             
         }
+        
         
         
         moveJoystick.on(.move) { [unowned self] joystick in
@@ -418,6 +459,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         if time <= 0{
             isTimeUp = true
+            myLabel.removeFromParent()
         }
         
         if(isTimeUp){
@@ -473,61 +515,82 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 redButton.removeFromParent()
                 blueButton.removeFromParent()
                 gokuSprite.removeFromParent()
+                vegetaSprite.removeFromParent()
                 myLabel.removeFromParent()
             }
         }
         
         //AIVE
-        
-      /*  if(vegetaUp){
-            if AIBlock{
-                if !alreadyBlock  {
-                    self.vegetaSprite.run(SKAction.repeat(self.vegetaBlock,  count: 1))
-                    alreadyBlock = true;
-                }
-                else{
-                    
-                }
-             
-            }
-            else {
-                 vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
-            }
-            
-           
-        }
-        else{
-            if AIBlock{
-                if !alreadyBlock  {
-                    self.vegetaSprite.run(SKAction.repeatForever(self.vegetaBlock), completion: {
-                    self.alreadyBlock = true;
-                    })
-                }
-                else{
-                    
-                }
-                
-            }
-            else {
-                 vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
-                
-            }
-           
-        }*/
-        
-        if(vegetaSprite.speed > 0){
+        switch RandomNumber { // 0 to 99
+        case 0..<5:
+            self.AIBlock = true
+            self.vegetaSprite.run(SKAction.repeatForever(self.vegetaBlock), completion: {
+                print(self.RandomNumber)
+            })
+        case 5..<20:
+            self.AIBlock = false
+            self.vegetaSprite.run(SKAction.repeatForever(self.vegetaIdle))
+        case 20..<30:
+            self.AIBlock = false
+            if(self.vegetaUp){
             self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+            vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
+            }
+            else{
+                self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
+            }
+        case 30..<40:
+            if(!self.vegetaUp){
+                self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
+            }
+            else{
+                self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
+                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
+            }
+        case 40..<60:
+            if self.vegetaCanAttack {
+               self.vegetaCanAttack = false
+                self.AIBlock = false
+                self.vegetaSprite.run(self.vegetaAttack, completion: {
+            
+                    var vegetaBall:SKSpriteNode!
+            vegetaBall = SKSpriteNode(imageNamed: "ballVegeta")
+            vegetaBall.setScale(0.5)
+            vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 30, y:self.vegetaSprite.position.y)
+            vegetaBall.run(self.moveBall2)
+            
+            vegetaBall?.physicsBody = SKPhysicsBody(rectangleOf: (vegetaBall?.frame.size)!)
+            vegetaBall?.physicsBody?.affectedByGravity = false;
+            vegetaBall?.physicsBody?.allowsRotation = false;
+            vegetaBall?.physicsBody?.mass = 2.0
+            vegetaBall?.physicsBody?.categoryBitMask = attackVCategory
+            vegetaBall?.physicsBody?.contactTestBitMask = 00011111
+            vegetaBall?.physicsBody?.collisionBitMask = 00010011;
+            
+            self.addChild(vegetaBall)
+            print(self.RandomNumber)
+            self.vegetaCanAttack = false
+            })
+            }
+            else {
+                self.vegetaCanAttack = false
+                  self.VegetaRandomAI()
+            }
+        case 60..<85:
+            self.AIBlock = false
+            self.vegetaSprite.run(SKAction.repeatForever(vegetaIdle))
+        case 85..<100:
+            self.AIBlock = true
+            self.vegetaSprite.run(SKAction.repeatForever(self.vegetaBlock), completion: {
+                print(self.RandomNumber)
+            })
+        default:
+            self.AIBlock = false
+            print(self.RandomNumber)
         }
-        else {
-              self.vegetaSprite.run(SKAction.repeatForever(vegetaIdle))
-        }
-        /*
-        coolDownAttack1passed += currentTime;
-        
-        if coolDownAttack1passed > coolDownAttack1{
-            boolAttack1 = false;
-            coolDownAttack1passed = 0;
-        }*/
+     
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -536,25 +599,31 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 if node.name == "red" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
-                        self.attack2Sfx.run(SKAction.play());
+                        self.gokuPunch.run(SKAction.play());
                         //self.gokuSprite.run(SKAction.repeat(self.gokuAttack,  count: 1))
                         self.gokuSprite.run(self.gokuAttack, completion: {
                         self.boolAttack1 = true;
-                        self.AIBlock = !self.AIBlock
+                        //self.AIBlock = !self.AIBlock
                             if self.gokuSprite.position.x < self.vegetaSprite.position.x - 38 &&
                                 self.gokuSprite.position.x > 400 &&
                                 self.gokuSprite.position.y < self.vegetaSprite.position.y + 80 &&
                                 self.gokuSprite.position.y > self.vegetaSprite.position.y - 80
                                 {
-                                    self.vHealth -= 20;
-                                    self.vegetaDamaged.run(SKAction.play());
+                                    if self.AIBlock {
+                                        self.vHealth -= 5;
+                                        self.attack2Sfx.run(SKAction.play());
+                                    }
+                                    else{
+                                        self.vHealth -= 20;
+                                        self.vegetaDamaged.run(SKAction.play());
+                                    }
                             }
                             //("\(ship.position.x)")
-                            print("goku x " + "\(self.gokuSprite.position.x)")
+                     /*       print("goku x " + "\(self.gokuSprite.position.x)")
                             print("goku y " + "\(self.gokuSprite.position.y)")
                             print("veg x " + "\(self.vegetaSprite.position.x - 42)")
                             print("veg y + 80 " + "\(self.vegetaSprite.position.y + 80)")
-                            print("veg y - 80 " + "\(self.vegetaSprite.position.y - 80)")
+                            print("veg y - 80 " + "\(self.vegetaSprite.position.y - 80)")*/
                         //print("RED Button Pressed")
                         })
                     }
@@ -562,7 +631,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 if node.name == "blue" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
-                        self.alreadyBlock = false
                         //self.vegetaSprite.position = CGPoint(x: self.vegetaSprite.position.x, y: self.vegetaSprite.position.y - 10)
                         self.attackSfx.run(SKAction.play());
                         self.gokuSprite.run(self.gokuAttack2,  completion: {
@@ -571,7 +639,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         var gokuBall:SKSpriteNode!
                         gokuBall = SKSpriteNode(imageNamed: "ballGoku")
                         gokuBall.setScale(0.5)
-                        gokuBall.position = CGPoint(x: self.gokuSprite.position.x + 10, y:self.gokuSprite.position.y)
+                        gokuBall.position = CGPoint(x: self.gokuSprite.position.x + 25, y:self.gokuSprite.position.y)
                         gokuBall.run(self.moveBall)
                         
                         gokuBall?.physicsBody = SKPhysicsBody(rectangleOf: (gokuBall?.frame.size)!)
@@ -595,7 +663,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         vegetaBall = SKSpriteNode(imageNamed: "ballVegeta")
                         vegetaBall.zPosition = 3
                         vegetaBall.setScale(0.5)
-                        vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 10, y:self.vegetaSprite.position.y)
+                        vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 30, y:self.vegetaSprite.position.y)
                         vegetaBall.run(self.moveBall2)
                         
                         vegetaBall?.physicsBody = SKPhysicsBody(rectangleOf: (vegetaBall?.frame.size)!)
@@ -607,7 +675,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         vegetaBall?.physicsBody?.collisionBitMask = 00001001;
                         
                         self.addChild(vegetaBall)
-                        print("BACK Button Pressed")
+                //        print("BACK Button Pressed")
                     }
                 }
           
