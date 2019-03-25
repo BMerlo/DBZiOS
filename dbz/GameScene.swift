@@ -136,12 +136,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         myLabel.text = "\(time)"
         myLabel.fontSize = 36
         myLabel.position = CGPoint(x: screenSize.width/2, y:screenSize.height * 0.88)
+        myLabel.fontColor = UIColor.yellow
         
         let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(fire(timer:)), userInfo: nil, repeats: true)
     
-        let timerAI = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(VegetaRandomAI(timer:)), userInfo: nil, repeats: true)
+        let timerAI = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(VegetaRandomAI(timer:)), userInfo: nil, repeats: true) //change behavior of AI every 2 seconds
         
-        let timerDelay = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(VegetaDeleayAttack(timer:)), userInfo: nil, repeats: true)
+        let timerDelay = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(VegetaDeleayAttack(timer:)), userInfo: nil, repeats: true) //reset vegeta delay so he can attack again
         
         background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: screenSize.width/2, y:screenSize.height/2)
@@ -316,6 +317,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(blueButton)
         addChild(redButton)
        // addChild(backButton) added to debug AI
+       //add it back if you want to make vegeta attack with abutton that's on the top right corner
         
         addChild(redBar1)
         addChild(gokuBar)
@@ -334,7 +336,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(vegetaDies)
         
         gokuSprite.run(SKAction.repeatForever(gokuIdle)) // this way the animation will keep playing for ever
-        vegetaSprite.run(SKAction.repeatForever(vegetaIdle)) // this way the animation will keep playing for ever
+       // vegetaSprite.run(SKAction.repeatForever(vegetaIdle)) // this way the animation will keep playing for ever
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -392,15 +394,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         if contact.bodyA.categoryBitMask == playerCategory && contact.bodyB.categoryBitMask == attackVCategory {
             contact.bodyB.node?.removeFromParent()
             self.gokuAh.run(SKAction.play());
-            gHealth -= 15
+            gHealth -= 35
             print("player collided enemyBall")
         }
         
-        if contact.bodyA.categoryBitMask == attackVCategory && contact.bodyB.categoryBitMask == attackGCategory {
+        if contact.bodyA.categoryBitMask == attackGCategory && contact.bodyB.categoryBitMask == attackVCategory {
+            print("attacks collided")
             //if ki blasts collide they will destroy each other
-            contact.bodyB.node?.removeFromParent()
             contact.bodyA.node?.removeFromParent()
-            
+            contact.bodyB.node?.removeFromParent()
+        self.clashSfx.run(SKAction.play());
         }
         
     }
@@ -415,8 +418,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     @objc func VegetaRandomAI(timer: Timer)
     {
         // print("I got called")
-        RandomNumber = Int.random(in: 0 ..< 100)
-        
+        RandomNumber = Int(arc4random_uniform(UInt32(100)))
+        //RandomNumber = Int.random(in: 0 ..< 100) this worked at home, not at school
     }
     
     @objc func VegetaDeleayAttack(timer: Timer)
@@ -427,7 +430,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     }
     
     @objc func VegetaRandomAI(){
-        RandomNumber = Int.random(in: 0 ..< 100)
+        RandomNumber = Int(arc4random_uniform(UInt32(100)))
+        //RandomNumber = Int.random(in: 0 ..< 100)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -534,51 +538,42 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             self.AIBlock = false
             if(self.vegetaUp){
             self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
-            vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
+            vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 5)
             }
             else{
                 self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
-                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
+                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 5)
             }
-        case 30..<40:
-            if(!self.vegetaUp){
-                self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
-                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y + 10)
-            }
-            else{
-                self.vegetaSprite.run(SKAction.repeat(self.vegetaMove, count: 1))
-                vegetaSprite.position = CGPoint(x: vegetaSprite.position.x, y: vegetaSprite.position.y - 10)
-            }
-        case 40..<60:
+        case 30..<70:
             if self.vegetaCanAttack {
-               self.vegetaCanAttack = false
+                self.vegetaCanAttack = false
                 self.AIBlock = false
+                var vegetaBall:SKSpriteNode!
+                vegetaBall = SKSpriteNode(imageNamed: "ballVegeta")
+                vegetaBall.setScale(0.5)
+                vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 30, y:self.vegetaSprite.position.y)
+                vegetaBall.run(self.moveBall2)
+                
+                vegetaBall?.physicsBody = SKPhysicsBody(rectangleOf: (vegetaBall?.frame.size)!)
+                vegetaBall?.physicsBody?.affectedByGravity = false;
+                vegetaBall?.physicsBody?.allowsRotation = false;
+                vegetaBall?.physicsBody?.mass = 2.0
+                vegetaBall?.physicsBody?.categoryBitMask = attackVCategory
+                vegetaBall?.physicsBody?.contactTestBitMask = 00011111
+                vegetaBall?.physicsBody?.collisionBitMask = 00001011;
+                // vegetaBall.name = "ballV"
+                
+                self.addChild(vegetaBall)
                 self.vegetaSprite.run(self.vegetaAttack, completion: {
-            
-                    var vegetaBall:SKSpriteNode!
-            vegetaBall = SKSpriteNode(imageNamed: "ballVegeta")
-            vegetaBall.setScale(0.5)
-            vegetaBall.position = CGPoint(x: self.vegetaSprite.position.x - 30, y:self.vegetaSprite.position.y)
-            vegetaBall.run(self.moveBall2)
-            
-            vegetaBall?.physicsBody = SKPhysicsBody(rectangleOf: (vegetaBall?.frame.size)!)
-            vegetaBall?.physicsBody?.affectedByGravity = false;
-            vegetaBall?.physicsBody?.allowsRotation = false;
-            vegetaBall?.physicsBody?.mass = 2.0
-            vegetaBall?.physicsBody?.categoryBitMask = attackVCategory
-            vegetaBall?.physicsBody?.contactTestBitMask = 00011111
-            vegetaBall?.physicsBody?.collisionBitMask = 00010011;
-            
-            self.addChild(vegetaBall)
-            print(self.RandomNumber)
-            self.vegetaCanAttack = false
-            })
+                    print(self.RandomNumber)
+                    self.vegetaCanAttack = false
+                })
             }
             else {
                 self.vegetaCanAttack = false
-                  self.VegetaRandomAI()
+                self.VegetaRandomAI()
             }
-        case 60..<85:
+        case 70..<85:
             self.AIBlock = false
             self.vegetaSprite.run(SKAction.repeatForever(vegetaIdle))
         case 85..<100:
@@ -628,14 +623,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         })
                     }
                 }
-                if node.name == "blue" {
+                if node.name == "blue" { //BLAST
                     if node.contains(t.location(in:self))// do whatever here
                     {
                         //self.vegetaSprite.position = CGPoint(x: self.vegetaSprite.position.x, y: self.vegetaSprite.position.y - 10)
                         self.attackSfx.run(SKAction.play());
-                        self.gokuSprite.run(self.gokuAttack2,  completion: {
-                        
-                        //ATTACKS
                         var gokuBall:SKSpriteNode!
                         gokuBall = SKSpriteNode(imageNamed: "ballGoku")
                         gokuBall.setScale(0.5)
@@ -647,13 +639,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                         gokuBall?.physicsBody?.allowsRotation = false;
                         gokuBall?.physicsBody?.mass = 2.0
                         gokuBall?.physicsBody?.categoryBitMask = attackGCategory
-                        gokuBall?.physicsBody?.contactTestBitMask = 00011111
-                        gokuBall?.physicsBody?.collisionBitMask = 00010001;
+                        gokuBall.physicsBody?.contactTestBitMask = attackVCategory | enemyCategory | wallCategory
+                        gokuBall.physicsBody?.collisionBitMask = attackVCategory | enemyCategory | wallCategory
+                        //gokuBall?.physicsBody?.contactTestBitMask = 00011111
+                       //gokuBall?.physicsBody?.collisionBitMask = 00010001;
                         
                         self.addChild(gokuBall)
+                        self.gokuSprite.run(self.gokuAttack2,  completion: {
+                            
                         })
                     }
                 }
+                 //back button only active for debuging AI
                 if node.name == "back" {
                     if node.contains(t.location(in:self))// do whatever here
                     {
